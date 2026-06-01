@@ -13,7 +13,8 @@
         :root { --pink: #ff758c; --glass: rgba(255, 255, 255, 0.08); --black: #050505; }
 
         body { margin: 0; background: var(--black); color: white; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
-        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         
         section { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; z-index: 1; padding: 40px 20px; }
         
@@ -26,10 +27,9 @@
         .btn:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--pink); }
         
         .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; margin-top: 20px; }
-        
         .photo-card { height: 250px; background: #222; border-radius: 20px; overflow: hidden; border: 2px solid rgba(255,117,140,0.3); transition: 0.4s; cursor: pointer; position: relative; }
         
-        /* This class forces orientation - remove 'force-rotate' from div if image is already correct */
+        /* Force correct orientation - remove 'force-rotate' from div if image is correct */
         .force-rotate img { transform: rotate(90deg); } 
         
         .photo-card img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: 0.6s; }
@@ -63,7 +63,6 @@
     <section>
         <h2 class="memories-title">💖 Cherished Moments 💖</h2>
         <div class="gallery">
-            <!-- Add 'force-rotate' class to div if image needs rotation -->
             <div class="photo-card force-rotate"><img src="likhitha1.jpg" alt="Likhitha 1"></div>
             <div class="photo-card force-rotate"><img src="likhitha2.jpg" alt="Likhitha 2"></div>
             <div class="photo-card"><img src="likhitha3.jpg" alt="Likhitha 3"></div>
@@ -85,19 +84,41 @@
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
+        
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.getElementById('canvas-container').appendChild(renderer.domElement);
-        camera.position.z = 5;
-        function animate() { requestAnimationFrame(animate); renderer.render(scene, camera); }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 64; canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ff758c';
+        ctx.font = '50px serif';
+        ctx.fillText('❤️', 0, 50);
+        const heartTexture = new THREE.CanvasTexture(canvas);
+
+        const particles = new THREE.BufferGeometry();
+        const count = 4000; 
+        const pos = new Float32Array(count * 3);
+        for(let i=0; i<count * 3; i++) pos[i] = (Math.random() - 0.5) * 50;
+        particles.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+
+        const mat = new THREE.PointsMaterial({ size: 0.4, map: heartTexture, transparent: true, alphaTest: 0.1 });
+        const cloud = new THREE.Points(particles, mat);
+        scene.add(cloud);
+        camera.position.z = 20;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            cloud.rotation.y += 0.0003;
+            renderer.render(scene, camera);
+        }
         animate();
+
         gsap.utils.toArray(".glass").forEach(panel => {
-            gsap.from(panel, {
-                scrollTrigger: { trigger: panel, start: "top 80%", toggleActions: "play none none reverse" },
-                opacity: 0, y: 50, duration: 1.5
-            });
+            gsap.from(panel, { scrollTrigger: { trigger: panel, start: "top 80%" }, opacity: 0, y: 50, duration: 1.5 });
         });
     </script>
 </body>
