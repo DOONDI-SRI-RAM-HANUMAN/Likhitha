@@ -29,9 +29,6 @@
         .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; width: 100%; max-width: 1000px; margin-top: 20px; }
         .photo-card { height: 250px; background: #222; border-radius: 20px; overflow: hidden; border: 2px solid rgba(255,117,140,0.3); transition: 0.4s; cursor: pointer; position: relative; }
         
-        /* Force correct orientation - remove 'force-rotate' from div if image is correct */
-        .force-rotate img { transform: rotate(90deg); } 
-        
         .photo-card img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: 0.6s; }
         .photo-card:hover { transform: translateY(-10px); border-color: var(--pink); box-shadow: 0 10px 30px var(--pink); }
         .photo-card:hover img { transform: scale(1.1); }
@@ -63,11 +60,7 @@
     <section>
         <h2 class="memories-title">💖 Cherished Moments 💖</h2>
         <div class="gallery">
-            <div class="photo-card force-rotate"><img src="likhitha1.jpg" alt="Likhitha 1"></div>
-            <div class="photo-card force-rotate"><img src="likhitha2.jpg" alt="Likhitha 2"></div>
             <div class="photo-card"><img src="likhitha3.jpg" alt="Likhitha 3"></div>
-            <div class="photo-card force-rotate"><img src="likhitha4.jpg" alt="Likhitha 4"></div>
-            <div class="photo-card force-rotate"><img src="likhitha5.jpg" alt="Likhitha 5"></div>
             <div class="photo-card"><img src="likhitha6.jpg" alt="Likhitha 6"></div>
             <div class="photo-card"><img src="likhitha7.jpg" alt="Likhitha 7"></div>
             <div class="photo-card"><img src="likhitha8.jpg" alt="Likhitha 8"></div>
